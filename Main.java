@@ -3,11 +3,14 @@ package com.example;
 import java.util.LinkedList;
 import java.util.List;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class Main extends Application{
     public static void main(String[] args) {
@@ -17,6 +20,8 @@ public class Main extends Application{
     @Override
     public void start(Stage primaryStage) throws Exception {
         int amountOfCircles = 50;
+        boolean[] isPressed = new boolean[1];
+        Ball[] chosen = new Ball[1];
         List<Ball> circles = new LinkedList<>();
 
         AnchorPane root = new AnchorPane();
@@ -32,9 +37,24 @@ public class Main extends Application{
                     
                 }
             }
+            b.setOnMousePressed(event -> {
+                chosen[0] = b;
+                isPressed[0] = true;
+            });
             circles.add(b);
             root.getChildren().add(b);
         }
+
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(10), event -> {
+            for (int i = 0; i < circles.size(); i++) {
+                Ball b = circles.get(i);
+                b.setCenterX(b.getCenterX()+b.getVx());
+                b.setCenterY(b.getCenterY()+b.getVy());
+            }
+        }));
+
+        timeline.setCycleCount(-1);
+        timeline.play();
 
         Stage stage = new Stage();
         stage.setScene(scene);
